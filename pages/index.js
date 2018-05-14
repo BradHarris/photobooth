@@ -27,34 +27,24 @@ class WebcamCapture extends React.Component {
 
   async capture() {
     for(let timer = 3; timer >= 0; timer--) {
-      console.log(timer);
-      this.setState({
-        captureTimer: timer
-      });
+      this.setState({ captureTimer: timer  });
 
       await delay(1000);
     }
 
-    this.setState({
-      captureTimer: -1
-    });
+    this.setState({ captureTimer: -1 });
 
     const imageSrc = this.webcam.getScreenshot();
+    imageSrc.replace(/^data:image\/\w+;base64,/, "");
 
-    this.setState({
-      captureBlob: imageSrc
-    });
+    const blob = new Blob([imageSrc], {type: 'image/base64'});
+    console.log(blob);
+    this.setState({ captureBlob: imageSrc });
 
     const form = new FormData();
-    form.append('image', imageSrc, `image-${new Date()}`);
-
-    // const headers = {
-    //   'Accept': 'application/json, */*',
-    //   'Content-Type': 'multipart/form-data'
-    // };
+    form.append('image', blob, 'image.png');
 
     const options = {
-      // headers,
       method: 'POST',
       body: form
     };
@@ -62,9 +52,7 @@ class WebcamCapture extends React.Component {
     const uploadtStatus = fetch('/upload', options);
 
     await delay(2000);
-    this.setState({
-      captureBlob: null
-    });
+    this.setState({ captureBlob: null });
   }
 
   render() {
@@ -114,14 +102,18 @@ class WebcamCapture extends React.Component {
             }
           </div>
         }
+
+        { this.state.captureTimer === -1 &&
+          <WebcamCaptureButton
+            onClick={this.capture}
+          >
+            Capture Photo
+          </WebcamCaptureButton>
+        }
+
         { this.state.captureBlob &&
           <img className='captured-image' src={this.state.captureBlob} />
         }
-        <WebcamCaptureButton
-          onClick={this.capture}
-        >
-          Capture Photo
-        </WebcamCaptureButton>
       </div>
     );
   }
