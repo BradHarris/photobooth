@@ -6,6 +6,9 @@ const fs = require('fs');
 const multer = require('multer');
 const next = require('next');
 const upload = multer();
+const {promisify} = require('util');
+
+const writeFile = promisify(fs.writeFile);
 
 const port = parseInt(process.env.PORT, 10) || 3001;
 const dev = process.env.NODE_ENV !== 'production';
@@ -13,6 +16,8 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const base64Regex = new RegExp(/^data:image\/png;base64,/);
+
+const UPLOADS_DIR = process.env.UPLOADS_DIR || './uploads';
 
 app.prepare().then(() => {
   const server = express();
@@ -26,7 +31,7 @@ app.prepare().then(() => {
 
       const fileName = `${(new Date()).toISOString()}-${file.fieldname}.png`;
 
-      await fs.writeFile(`${process.env.UPLOADS_DIR}/${fileName}`, base64Data, 'base64');
+      await writeFile(`${UPLOADS_DIR}/${fileName}`, base64Data, 'base64');
 
       return res.sendStatus(204);
     } catch (err) {

@@ -62,3 +62,6 @@ typings/
 
 # mac DS Store
 .DS_Store
+
+# images
+*.png
