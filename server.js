@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -16,7 +17,7 @@ const base64Regex = new RegExp(/^data:image\/png;base64,/);
 app.prepare().then(() => {
   const server = express();
 
-  server.post('/upload', upload.single('image'), (req, res) => {
+  server.post('/upload', upload.single('image'), async (req, res) => {
 
     const file = req.file;
 
@@ -25,7 +26,7 @@ app.prepare().then(() => {
 
       const fileName = `${(new Date()).toISOString()}-${file.fieldname}.png`;
 
-      fs.writeFile(`${__dirname}/uploads/${fileName}`, base64Data, 'base64');
+      await fs.writeFile(`${process.env.UPLOADS_DIR}/${fileName}`, base64Data, 'base64');
 
       return res.sendStatus(204);
     } catch (err) {
