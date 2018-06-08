@@ -13,7 +13,7 @@ export default class MyDocument extends Document {
           <style>
             {`
               body {
-                background: black;
+                background: white;
                 padding: 0px;
                 margin: 0px;
                 width: 100%;

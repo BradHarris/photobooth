@@ -138,14 +138,11 @@ class WebcamCapture extends React.Component {
 
         { this.state.captureTimer >= 0 &&
           <div className='capture-timer'>
-
-            { this.state.captureTimer === 0 ?
-              'SMILE' : this.state.captureTimer
-            }
+            { this.state.captureTimer }
           </div>
         }
 
-        { this.state.captureBlob &&
+        { this.state.captureTimer === 0 &&
           <div
             className='captured-image'
             style={{
