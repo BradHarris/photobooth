@@ -87,7 +87,7 @@ class WebcamCapture extends React.Component {
               height: 100%;
 
               background-repeat: no-repeat;
-              background-color: black;
+              background-color: white;
               background-position: center;
               background-size: contain;
 
@@ -128,6 +128,14 @@ class WebcamCapture extends React.Component {
           }
         </WindowResponsive>
 
+        { this.state.captureTimer === -1 &&
+          <Button
+            onClick={this.capture}
+          >
+            Capture Photo
+          </Button>
+        }
+
         { this.state.captureTimer >= 0 &&
           <div className='capture-timer'>
 
@@ -135,14 +143,6 @@ class WebcamCapture extends React.Component {
               'SMILE' : this.state.captureTimer
             }
           </div>
-        }
-
-        { this.state.captureTimer === -1 &&
-          <Button
-            onClick={this.capture}
-          >
-            Capture Photo
-          </Button>
         }
 
         { this.state.captureBlob &&
