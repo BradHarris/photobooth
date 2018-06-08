@@ -65,3 +65,6 @@ typings/
 
 # images
 *.png
+
+# flickr data
+data/
