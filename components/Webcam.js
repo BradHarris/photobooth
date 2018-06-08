@@ -1,3 +1,8 @@
+/*
+  copied source from react-webcam v0.5.0
+  https://github.com/mozmorris/react-webcam
+*/
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
