@@ -1,5 +1,5 @@
 import React from 'react';
-import Webcam from 'react-webcam';
+import Webcam from '../components/Webcam';
 
 import WindowResponsive from '../components/WindowResponsive';
 import Button from '../components/Button';
