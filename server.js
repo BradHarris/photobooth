@@ -67,15 +67,15 @@ function uploadToFlickr(options) {
       const base64Data = file.buffer.toString().replace(base64Regex, '');
 
       const date = new Date();
-      const fileName = `${date.toISOString()}-${file.fieldname}.png`;
-
+      const title = date.toLocaleString();
+      const fileName = `${title}.png`;
       const filePath = `${UPLOADS_DIR}/${fileName}`;
 
       await writeFile(filePath, base64Data, 'base64');
 
       const result = await uploadToFlickr({
         photos: [{
-          title: date.toLocaleString(),
+          title,
           photo: filePath
         }]
       });

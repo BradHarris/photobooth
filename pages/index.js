@@ -2,7 +2,7 @@ import React from 'react';
 import Webcam from 'react-webcam';
 
 import WindowResponsive from '../components/WindowResponsive';
-import WebcamCaptureButton from '../components/WebcamCaptureButton';
+import Button from '../components/Button';
 
 function delay(timeout) {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -14,11 +14,13 @@ class WebcamCapture extends React.Component {
 
     this.state = {
       captureTimer: -1,
-      captureBlob: null
+      captureBlob: null,
+      resetTimer: 0
     };
 
     this.setRef = this.setRef.bind(this);
     this.capture = this.capture.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   setRef(webcam) {
@@ -29,7 +31,7 @@ class WebcamCapture extends React.Component {
     for(let timer = 3; timer >= 0; timer--) {
       this.setState({ captureTimer: timer });
 
-      await delay(1000);
+      await delay(850);
     }
 
     const imageSrc = this.webcam.getScreenshot();
@@ -49,9 +51,26 @@ class WebcamCapture extends React.Component {
 
     const uploadStatus = await fetch('/upload', options);
 
+    for(let timer = 10; timer >= 0; timer--) {
+      if (this.state.captureTimer !== 0) {
+        return;
+      }
+
+      this.setState({ resetTimer: timer });
+
+      await delay(850);
+    }
+
+    if (this.state.captureTimer !== -1) {
+      this.reset();
+    }
+  }
+
+  reset() {
     this.setState({
       captureTimer: -1,
-      captureBlob: null
+      captureBlob: null,
+      resetTimer: 0
     });
   }
 
@@ -70,13 +89,24 @@ class WebcamCapture extends React.Component {
               background-repeat: no-repeat;
               background-color: black;
               background-position: center;
+              background-size: contain;
+
+              display: flex;
+              flex-flow: row nowrap;
+              align-items: flex-end;
+              justify-content: center;
+
+              font-size: 75px;
+              font-weight: bold;
+              color: rgba(255, 255, 255, 0.5);
+              text-shadow: 0px 10px 20px rgba(0,0,0,0.5);
             }
 
             .capture-timer {
               position: absolute;
-              top: 50%;
+              bottom: 0px;
               left: 50%;
-              transform: translate(-50%, -50%);
+              transform: translate(-50%, 0px);
 
               font-size: 150px;
               font-weight: bold;
@@ -108,11 +138,11 @@ class WebcamCapture extends React.Component {
         }
 
         { this.state.captureTimer === -1 &&
-          <WebcamCaptureButton
+          <Button
             onClick={this.capture}
           >
             Capture Photo
-          </WebcamCaptureButton>
+          </Button>
         }
 
         { this.state.captureBlob &&
@@ -121,7 +151,15 @@ class WebcamCapture extends React.Component {
             style={{
               backgroundImage: `url(${this.state.captureBlob})`
             }}
-          />
+          >
+            { this.state.resetTimer > 0 &&
+              <Button
+                onClick={this.reset}
+              >
+                Reset ({this.state.resetTimer})
+              </Button>
+            }
+          </div>
         }
       </div>
     );
