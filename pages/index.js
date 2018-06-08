@@ -27,18 +27,16 @@ class WebcamCapture extends React.Component {
 
   async capture() {
     for(let timer = 3; timer >= 0; timer--) {
-      this.setState({ captureTimer: timer  });
+      this.setState({ captureTimer: timer });
 
       await delay(1000);
     }
 
-    this.setState({ captureTimer: -1 });
-
     const imageSrc = this.webcam.getScreenshot();
-    imageSrc.replace(/^data:image\/\w+;base64,/, "");
+    imageSrc.replace(/^data:image\/\w+;base64,/, '');
 
     const blob = new Blob([imageSrc], {type: 'image/base64'});
-    console.log(blob);
+
     this.setState({ captureBlob: imageSrc });
 
     const form = new FormData();
@@ -49,10 +47,12 @@ class WebcamCapture extends React.Component {
       body: form
     };
 
-    const uploadtStatus = fetch('/upload', options);
+    const uploadStatus = await fetch('/upload', options);
 
-    await delay(2000);
-    this.setState({ captureBlob: null });
+    this.setState({
+      captureTimer: -1,
+      captureBlob: null
+    });
   }
 
   render() {
@@ -66,6 +66,10 @@ class WebcamCapture extends React.Component {
               left: 0px;
               width: 100%;
               height: 100%;
+
+              background-repeat: no-repeat;
+              background-color: black;
+              background-position: center;
             }
 
             .capture-timer {
@@ -89,7 +93,7 @@ class WebcamCapture extends React.Component {
               audio={false}
               height={height}
               width={width}
-              screenshotFormat="image/png"
+              screenshotFormat='image/png'
             />
           }
         </WindowResponsive>
@@ -112,7 +116,12 @@ class WebcamCapture extends React.Component {
         }
 
         { this.state.captureBlob &&
-          <img className='captured-image' src={this.state.captureBlob} />
+          <div
+            className='captured-image'
+            style={{
+              backgroundImage: `url(${this.state.captureBlob})`
+            }}
+          />
         }
       </div>
     );
