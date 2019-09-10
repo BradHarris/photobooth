@@ -112,8 +112,10 @@ export default class Webcam extends Component {
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
-      this.ctx.translate(canvas.width, 0);
-      this.ctx.scale(-1, 1);
+      
+      // use if you want to have image mirrored on save as well
+      // this.ctx.translate(canvas.width, 0);
+      // this.ctx.scale(-1, 1);
     }
 
     const { ctx, canvas } = this;
